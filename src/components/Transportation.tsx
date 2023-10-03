@@ -1,64 +1,56 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useId, useState } from 'react';
 
 import { useStore } from '../store';
 
 const Transportation = ({
   toggle,
-  reset,
+  dist,
 }: {
   toggle: boolean;
-  reset: boolean;
+  dist: number;
 }) => {
   const vehicles = useStore(state => state.vehicles);
-  const vehicle_names = useStore(state => state.vehicle_names);
-  const [selectValue, setSelectValue] = useState<string>();
-  const [selectReset, setSelectReset] = useState<boolean>(reset);
+  const [radio, setRadio] = useState<string>();
+  const radioId = useId();
 
-  const handleChange = (selectEvent: ChangeEvent<HTMLSelectElement>) => {
-    if (selectValue) useStore.getState().removeVehicle(selectValue);
-    setSelectValue(selectEvent.target.value);
-    useStore.getState().addVehicle(selectEvent.target.value);
-    setSelectReset(false);
-    setSelectValue(undefined);
+  const handleChange = (radioChangeEvent: ChangeEvent<HTMLInputElement>) => {
+    if (radio) useStore.getState().removeVehicle(radio);
+    const val = radioChangeEvent.target.id.split('-')[0];
+    setRadio(val);
+    useStore.getState().addVehicle(val);
   };
 
   return (
-    <div className='p-2'>
-      <label
-        htmlFor='HeadlineAct'
-        className='block text-lg font-medium text-gray-900'
-      >
-        Transportation
-      </label>
-
-      <select
-        name='HeadlineAct'
-        id='HeadlineAct'
-        defaultValue='select'
-        className='p-2 w-full text-lg rounded-md border-gray-300 sm:text-sm'
-        onChange={handleChange}
-        disabled={!toggle}
-        value={selectReset ? 0 : selectValue}
-      >
-        <option
-          value='select'
-          // disabled
-        >
-          Select
-        </option>
+    <>
+      <h2 className='text-gray-900 font-medium py-2'>Select Transportation</h2>
+      <ul className='space-y-3'>
         {vehicles.map((vehicle, index) => {
+          console.log(vehicle.max_distance < dist);
+
           return (
-            <option
-              value={vehicle.name}
+            <li
               key={index}
-              disabled={vehicle_names.includes(vehicle.name)}
+              className='flex items-center gap-x-2.5'
             >
-              {vehicle.name}
-            </option>
+              <input
+                type='radio'
+                name={`vehicle-${radioId}`}
+                id={`${vehicle.name}-${radioId}`}
+                className='form-radio cursor-pointer border-gray-400 text-indigo-600 focus:ring-indigo-600 duration-150'
+                onChange={handleChange}
+                disabled={!toggle || vehicle.max_distance < dist}
+              />
+              <label
+                htmlFor={`${vehicle.name}-${radioId}`}
+                className='text-sm cursor-pointer text-gray-700 font-medium'
+              >
+                {vehicle.name} ({vehicle.total_no})
+              </label>
+            </li>
           );
         })}
-      </select>
-    </div>
+      </ul>
+    </>
   );
 };
 

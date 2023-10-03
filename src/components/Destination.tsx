@@ -14,30 +14,33 @@ const Destination = ({
   const planet_names = useStore(state => state.planet_names);
   const [selectValue, setSelectValue] = useState<string>();
   const [toggle, setToggle] = useState<boolean>(false);
-  const [reset, setReset] = useState<boolean>(false);
+  const [dist, setDist] = useState<number>(Number.MAX_SAFE_INTEGER);
 
   const handleChange = (selectEvent: ChangeEvent<HTMLSelectElement>) => {
     if (selectValue) useStore.getState().removePlanet(selectValue);
     setSelectValue(selectEvent.target.value);
     useStore.getState().addPlanet(selectEvent.target.value);
     setToggle(true);
-    setReset(true);
+    const dist =
+      planets.find(item => item.name === selectValue)?.distance ??
+      Number.MAX_SAFE_INTEGER;
+
+    setDist(dist);
   };
 
   return (
     <>
       <div className='flex flex-col justify-between '>
         <label
-          htmlFor='HeadlineAct'
+          htmlFor='vehicles'
           className='block text-lg font-medium text-gray-900'
         >
           Destination {destination}
         </label>
 
         <select
-          name='HeadlineAct'
+          name='vehicles'
           defaultValue='select'
-          id='HeadlineAct'
           className='p-2 w-full text-lg rounded-md border-gray-300 sm:text-sm'
           onChange={handleChange}
           value={selectValue}
@@ -62,7 +65,7 @@ const Destination = ({
         </select>
       </div>
       <Transportation
-        reset={reset}
+        dist={dist}
         toggle={toggle}
       />
     </>

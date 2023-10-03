@@ -12,8 +12,6 @@ interface AppState {
   removePlanet: (planetName: string) => void;
   addVehicle: (vehicleName: string) => void;
   removeVehicle: (vehicleName: string) => void;
-  setPlanets: (planetsArray: Planet[]) => void;
-  setVehicles: (vehiclesArray: Vehicle[]) => void;
   fetchPlanets: () => Promise<void>;
   fetchVehicles: () => Promise<void>;
 }
@@ -39,12 +37,6 @@ export const useStore = create<AppState>(set => ({
         vehicle => vehicle !== vehicleName
       ),
     })),
-
-  setPlanets: (planetsArray: Planet[]) =>
-    set(() => ({ planets: planetsArray })),
-
-  setVehicles: (vehiclesArray: Vehicle[]) =>
-    set(() => ({ vehicles: vehiclesArray })),
 
   fetchPlanets: async () => {
     const response = await fetchWrapper.get('planets');
