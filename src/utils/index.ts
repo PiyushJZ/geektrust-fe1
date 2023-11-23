@@ -1,7 +1,8 @@
 import { fetchWrapper } from '../config';
+import { useStore } from '../store';
 import { FindResponse } from '../types';
 
-const getToken = async () => {
+const getToken = async (): Promise<{ token: string }> => {
   const response = await fetchWrapper.post(
     'token',
     {},
@@ -21,8 +22,8 @@ export const findFalcone = async () => {
     'find',
     {
       token,
-      planet_names: ['Donlon', 'Enchai', 'Pingasor', 'Sapir'],
-      vehicle_names: ['Space pod', 'Space pod', 'Space ship', 'Space shuttle'],
+      planet_names: useStore.getState().planet_names,
+      vehicle_names: useStore.getState().vehicle_names,
     },
     {
       headers: {

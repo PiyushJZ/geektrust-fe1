@@ -17,12 +17,14 @@ const Destination = ({
   const [dist, setDist] = useState<number>(Number.MAX_SAFE_INTEGER);
 
   const handleChange = (selectEvent: ChangeEvent<HTMLSelectElement>) => {
+    selectEvent.stopPropagation();
     if (selectValue) useStore.getState().removePlanet(selectValue);
-    setSelectValue(selectEvent.target.value);
-    useStore.getState().addPlanet(selectEvent.target.value);
+    const val = selectEvent.target.value;
+    setSelectValue(val);
+    useStore.getState().addPlanet(val);
     setToggle(true);
     const dist =
-      planets.find(item => item.name === selectValue)?.distance ??
+      planets.find(item => item.name === val)?.distance ??
       Number.MAX_SAFE_INTEGER;
 
     setDist(dist);

@@ -1,8 +1,14 @@
 import { Link, Outlet } from 'react-router-dom';
 
+import { useStore } from '../store';
 import Footer from './Footer';
 
 const Navbar = () => {
+  const handleClick = () => {
+    useStore.getState().resetPlanets();
+    useStore.getState().resetVehicles();
+  };
+
   return (
     <div className='flex flex-col justify-between h-screen'>
       <header className='bg-white'>
@@ -12,6 +18,7 @@ const Navbar = () => {
               <Link
                 className='block rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-700'
                 to='/'
+                onClick={handleClick}
               >
                 Reset
               </Link>
